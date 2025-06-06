@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     // TODO: Assign these in the Inspector or find them
     public Transform gunBarrel; // Point from where bullets are fired
     public GameObject bulletPrefab;
+    public GameObject muzzleFlashPrefab; // Assign the MuzzleFlash prefab in Inspector
     // public AudioClip shootSound;
     // public AudioClip emptyClipSound;
     // public AudioClip reloadSound;
@@ -27,8 +28,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
-        ApplyGravity();
+        if (GameManager.Instance.currentState == GameManager.GameState.Playing)
+        {
+            HandleAiming();
+            HandleInput();
+        }
+        ApplyGravity(); // Gravity should apply even if paused to fall to ground on game over
+    }
+
+    void HandleAiming()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = new Vector2(
+            mousePosition.x - transform.position.x,
+            mousePosition.y - transform.position.y
+        );
+
+        transform.right = direction;
     }
 
     void HandleInput()
@@ -58,12 +74,22 @@ public class PlayerController : MonoBehaviour
         Vector3 touchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         touchPosition.z = 0; // Ensure it's on the 2D plane
 
-        // 2. Orient revolver to point P (visually, if sprite rotates)
-        // transform.right = (touchPosition - transform.position).normalized; // Example if sprite points right
+        // 2. Orient revolver to point P -> This is now handled in HandleAiming() in Update
 
         // 3. Fire bullet towards P
         if (bulletPrefab != null && gunBarrel != null)
         {
+            // Instantiate Muzzle Flash
+            if (muzzleFlashPrefab != null)
+            {
+                Instantiate(muzzleFlashPrefab, gunBarrel.position, gunBarrel.rotation, gunBarrel);
+            }
+            else
+            {
+                // This message will appear if the prefab is not assigned in the Inspector
+                Debug.LogError("ERREUR : Le Muzzle Flash Prefab n'est pas assigné sur l'objet Player !");
+            }
+
             GameObject bullet = Instantiate(bulletPrefab, gunBarrel.position, Quaternion.identity);
             Bullet bulletScript = bullet.GetComponent<Bullet>();
             if (bulletScript != null)

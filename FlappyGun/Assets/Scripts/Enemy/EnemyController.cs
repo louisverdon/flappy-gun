@@ -10,7 +10,9 @@ public class EnemyController : MonoBehaviour
     private Rigidbody2D rb;
     private int direction = 1; // 1 for right, -1 for left
 
-    // public GameObject deathEffectPrefab; // Assign in Inspector for VFX
+    [Header("Effects")]
+    public GameObject deathEffectPrefab; // Assign in Inspector for VFX
+
     // public AudioClip deathSound; // Assign in Inspector for SFX
     // private AudioSource audioSource;
 
@@ -50,9 +52,15 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage()
     {
         // Play elimination effects
-        // if (deathEffectPrefab != null) Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
-        // if (deathSound != null && audioSource != null) audioSource.PlayOneShot(deathSound);
-        // else if (deathSound != null && GameManager.Instance != null) GameManager.Instance.PlaySound(deathSound); // Example with central audio manager
+        if (deathEffectPrefab != null)
+        {
+            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            // This message will appear if the prefab is not assigned in the Inspector
+            Debug.LogError("ERREUR : Le Death Effect Prefab n'est pas assigné sur le PREFAB de l'Ennemi !");
+        }
         
         Debug.Log("Enemy hit!");
 

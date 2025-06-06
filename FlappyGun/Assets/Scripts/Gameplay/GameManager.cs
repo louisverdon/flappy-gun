@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     public int score = 0;
     public UIManager uiManager; // Assign in Inspector or find dynamically
+    public EnemySpawner enemySpawner; // Will be found dynamically
+    public Camera mainCamera; // Will be found dynamically
 
     public enum GameState { StartMenu, Playing, Paused, GameOver }
     public GameState currentState { get; private set; }
@@ -37,10 +39,40 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.StartMenu);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Reset the state to StartMenu whenever a scene is loaded.
+        // This ensures that after a replay, we go back to the main menu.
+        
+        // We must re-find components in the newly loaded scene
+        uiManager = FindFirstObjectByType<UIManager>();
+        enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        mainCamera = Camera.main;
+
+        if(mainCamera == null)
+        {
+            Debug.LogError("GAME MANAGER: Main Camera not found in the scene! Ensure a camera is tagged with 'MainCamera'.");
+        }
+        
+        // Set the initial state, which will also handle Time.timeScale and show the correct UI
+        ChangeState(GameState.StartMenu);
+    }
+
     public void StartGame()
     {
         score = 0;
         if (uiManager != null) uiManager.UpdateScore(score);
+        if (enemySpawner != null) enemySpawner.StartSpawning();
         ChangeState(GameState.Playing);
         
         // if (gameStartSound != null && audioSource != null) audioSource.PlayOneShot(gameStartSound);
@@ -61,19 +93,19 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == GameState.GameOver) return; // Prevent multiple calls
 
+        if (enemySpawner != null) enemySpawner.StopSpawning();
         ChangeState(GameState.GameOver);
         // if (gameOverSound != null && audioSource != null) audioSource.PlayOneShot(gameOverSound);
         Debug.Log("Game Over! Final Score: " + score);
-        // TODO: Stop enemy spawning (EnemySpawner should check GameManager.currentState)
+        // TODO: Stop enemy spawning (this is now handled by StopSpawning)
         // TODO: Disable player controls (PlayerController should check GameManager.currentState)
     }
 
     public void Replay()
     {
         // Reload the current scene to restart the game
-        // This assumes your main game is in one scene. Adjust if using multiple scenes for menu vs game.
+        // The OnSceneLoaded callback will handle resetting the game state.
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        // StartGame(); // StartGame will be called by the new GameManager instance in the reloaded scene via its Start() -> ChangeState(StartMenu)
     }
     
     public void PauseGame()

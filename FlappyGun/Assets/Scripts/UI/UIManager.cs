@@ -39,10 +39,12 @@ public class UIManager : MonoBehaviour
         // Hook up button listeners
         if (replayButton != null && GameManager.Instance != null)
         {
+            replayButton.onClick.RemoveAllListeners(); // Clear existing listeners to prevent duplicates on scene reload
             replayButton.onClick.AddListener(GameManager.Instance.Replay);
         }
         if (startButton != null && GameManager.Instance != null)
         {
+            startButton.onClick.RemoveAllListeners(); // Clear existing listeners
             startButton.onClick.AddListener(GameManager.Instance.StartGame);
         }
     }

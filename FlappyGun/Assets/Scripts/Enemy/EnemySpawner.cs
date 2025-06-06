@@ -10,19 +10,19 @@ public class EnemySpawner : MonoBehaviour
     // public float maxSpawnY = 3f;  // Max Y position for spawn
 
     private float timer;
-    private Camera mainCamera;
+    private bool isSpawning = false;
 
     void Start()
     {
-        mainCamera = Camera.main;
         timer = spawnInterval; // Start with a spawn ready or with a delay Random.Range(0, spawnInterval)
+        isSpawning = false; // Ensure it doesn't spawn until told to
     }
 
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.currentState != GameManager.GameState.Playing)
+        if (!isSpawning)
         {
-            return; // Don't spawn if game is not in Playing state
+            return;
         }
 
         timer += Time.deltaTime;
@@ -33,11 +33,24 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    public void StartSpawning()
+    {
+        isSpawning = true;
+        timer = spawnInterval; // Reset timer to spawn an enemy quickly
+    }
+
+    public void StopSpawning()
+    {
+        isSpawning = false;
+    }
+
     void SpawnEnemy()
     {
+        Camera mainCamera = GameManager.Instance.mainCamera;
+
         if (enemyPrefab == null || mainCamera == null) 
         {
-            Debug.LogError("EnemyPrefab or MainCamera not set for Spawner!");
+            Debug.LogError("EnemyPrefab or MainCamera not set for Spawner! Check GameManager reference or scene setup.");
             return;
         }
 

@@ -105,6 +105,7 @@ MonoBehaviour:
   horizontalSpeed: 2
   verticalJumpForce: 5
   jumpInterval: 1.5
+  deathEffectPrefab: {fileID: 7986098708005820479, guid: a163d8746a26cb047bef95488224c9a5, type: 3}
 --- !u!50 &2343476962414322340
 Rigidbody2D:
   serializedVersion: 5
