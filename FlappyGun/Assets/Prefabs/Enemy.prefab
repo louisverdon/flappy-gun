@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2053130822502355117}
   - component: {fileID: 2511606207092512553}
   - component: {fileID: 2343476962414322340}
-  - component: {fileID: 8503289647966519831}
+  - component: {fileID: 8053816660293348741}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -103,8 +103,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontalSpeed: 2
-  verticalJumpForce: 7
-  jumpInterval: 0.75
+  verticalJumpForce: 9
+  jumpInterval: 1
   deathEffectPrefab: {fileID: 7986098708005820479, guid: a163d8746a26cb047bef95488224c9a5, type: 3}
 --- !u!50 &2343476962414322340
 Rigidbody2D:
@@ -133,8 +133,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &8503289647966519831
-BoxCollider2D:
+--- !u!60 &8053816660293348741
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -167,7 +167,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.013652325, y: -0.01365304}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -177,5 +177,23 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6.4337673, y: 4.6316133}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 3.155, y: -0.17999999}
+      - {x: 2.585, y: 0.17}
+      - {x: 2.455, y: 1.13}
+      - {x: 1.365, y: 2.23}
+      - {x: -0.995, y: 2.23}
+      - {x: -1.665, y: 1.87}
+      - {x: -2.065, y: 1.52}
+      - {x: -2.7949998, y: 1.16}
+      - {x: -3.155, y: 0.79999995}
+      - {x: -3.155, y: -0.39}
+      - {x: -2.485, y: -1.25}
+      - {x: -1.415, y: -1.9599999}
+      - {x: -0.685, y: -2.23}
+      - {x: 0.945, y: -2.23}
+      - {x: 0.97499996, y: -1.89}
+      - {x: 2.7949998, y: -1.9}
+      - {x: 3.155, y: -0.88}
+  m_UseDelaunayMesh: 0

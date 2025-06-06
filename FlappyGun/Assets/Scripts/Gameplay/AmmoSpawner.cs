@@ -18,6 +18,8 @@ public class AmmoSpawner : MonoBehaviour
     [Tooltip("A buffer from the screen edges to prevent spawning too close to the border.")]
     [Range(0.05f, 0.4f)]
     public float screenEdgeBuffer = 0.1f;
+    [Tooltip("The minimum world-space Y position for an ammo pack to spawn.")]
+    public float minSpawnHeight = -0f;
 
     private Camera mainCamera;
     private bool isSpawning = false;
@@ -70,6 +72,12 @@ public class AmmoSpawner : MonoBehaviour
         
         Vector3 spawnPosition = mainCamera.ViewportToWorldPoint(new Vector3(randomX, randomY, 10f));
         spawnPosition.z = 0; // Ensure it's on the 2D plane
+
+        // Ensure the spawn position is not below the minimum height
+        if (spawnPosition.y < minSpawnHeight)
+        {
+            spawnPosition.y = minSpawnHeight;
+        }
 
         Instantiate(ammoPrefab, spawnPosition, Quaternion.identity, transform);
     }
