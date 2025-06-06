@@ -3,7 +3,12 @@ using UnityEngine;
 // Corresponds to "Contrôle du Revolver" and "Gravité" in README.md
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement")]
     public float recoilForce = 10f;
+    [Tooltip("The maximum speed the player can reach.")]
+    public float maxSpeed = 15f;
+
+    [Header("Shooting")]
     public float fireRate = 0.5f; // Time between shots
     private float nextFireTime = 0f;
     public int maxAmmo = 6;
@@ -41,6 +46,18 @@ public class PlayerController : MonoBehaviour
             HandleInput();
         }
         ApplyGravity(); // Gravity should apply even if paused to fall to ground on game over
+    }
+
+    void FixedUpdate()
+    {
+        // Limit the player's velocity to the maxSpeed.
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null && rb.linearVelocity.sqrMagnitude > maxSpeed * maxSpeed)
+        {
+            // By normalizing the velocity and multiplying by maxSpeed, we maintain the direction of movement.
+            // Using sqrMagnitude is a performance optimization as it avoids a square root calculation.
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+        }
     }
 
     void HandleAiming()
