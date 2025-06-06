@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     // Play empty clip sound
-                    // if (emptyClipSound != null && audioSource != null) audioSource.PlayOneShot(emptyClipSound);
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.emptyClipSound);
                     Debug.Log("Clic à vide!");
                 }
             }
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
         }
 
         currentAmmo--;
-        // if (shootSound != null && audioSource != null) audioSource.PlayOneShot(shootSound);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.shootSound);
         Debug.Log("Bang! Ammo left: " + currentAmmo);
 
         // TODO: Update UI for ammo (if decided to show it)
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
     public void ReloadAmmo()
     {
         currentAmmo = maxAmmo;
-        // if (reloadSound != null && audioSource != null) audioSource.PlayOneShot(reloadSound);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.reloadSound);
         Debug.Log("Reloaded! Ammo: " + currentAmmo);
         // TODO: Play reload VFX/SFX
     }
@@ -152,6 +152,7 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.CompareTag("Ground")) // Assuming ground has "Ground" tag
         {
             Debug.Log("Player hit the ground - Game Over");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.groundImpactSound);
             GameManager.Instance.GameOver();
         }
         // Collision with AmmoPickup is handled by AmmoPickup's OnTriggerEnter2D
@@ -166,10 +167,17 @@ public class PlayerController : MonoBehaviour
             // If you see this message, the tag comparison is working.
             Debug.Log("SUCCESS: Collision with Ammo object confirmed inside the IF block.");
 
-            // Directly reload ammo.
+            // Reload ammo.
             ReloadAmmo();
             
-            // Directly destroy the other game object.
+            // Play VFX if the component and prefab exist
+            AmmoPickup ammoPickup = other.GetComponent<AmmoPickup>();
+            if (ammoPickup != null && ammoPickup.collectionEffectPrefab != null)
+            {
+                Instantiate(ammoPickup.collectionEffectPrefab, other.transform.position, Quaternion.identity);
+            }
+
+            // Destroy the ammo pickup object.
             Destroy(other.gameObject);
         }
     }

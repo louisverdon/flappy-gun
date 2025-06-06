@@ -75,6 +75,12 @@ public class EnemyController : MonoBehaviour
             GameManager.Instance.AddScore(1); // Assuming 1 point per enemy
         }
 
+        // Play death sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(AudioManager.Instance.enemyDeathSound);
+        }
+
         Destroy(gameObject);
     }
 

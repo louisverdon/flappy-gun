@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
         if (uiManager != null) uiManager.UpdateScore(score);
         if (enemySpawner != null) enemySpawner.StartSpawning();
         if (ammoSpawner != null) ammoSpawner.StartSpawning();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.gameStartSound);
         ChangeState(GameState.Playing);
         
         // if (gameStartSound != null && audioSource != null) audioSource.PlayOneShot(gameStartSound);
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour
 
         if (enemySpawner != null) enemySpawner.StopSpawning();
         if (ammoSpawner != null) ammoSpawner.StopSpawning();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.gameOverSound);
         ChangeState(GameState.GameOver);
         // if (gameOverSound != null && audioSource != null) audioSource.PlayOneShot(gameOverSound);
         Debug.Log("Game Over! Final Score: " + score);
