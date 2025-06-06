@@ -35,9 +35,9 @@ public class GroundController : MonoBehaviour
             Debug.LogError("GroundController: Ground Tile Prefab or Player Transform is not assigned!", this);
             enabled = false; return;
         }
-        SpriteRenderer renderer = groundTilePrefab.GetComponent<SpriteRenderer>();
+        SpriteRenderer renderer = groundTilePrefab.GetComponentInChildren<SpriteRenderer>();
         if (renderer == null || renderer.sprite == null) {
-             Debug.LogError("GroundController: The Ground Tile Prefab must have a SpriteRenderer with a Sprite assigned.", this);
+             Debug.LogError("GroundController: The Ground Tile Prefab or its children must contain a SpriteRenderer with a Sprite assigned.", this);
             enabled = false; return;
         }
 
