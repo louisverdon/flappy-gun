@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Transform gunBarrel; // Point from where bullets are fired
     public GameObject bulletPrefab;
     public GameObject muzzleFlashPrefab; // Assign the MuzzleFlash prefab in Inspector
+    public CameraController mainCameraController; // Assign the Main Camera in Inspector
     // public AudioClip shootSound;
     // public AudioClip emptyClipSound;
     // public AudioClip reloadSound;
@@ -105,6 +106,12 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 recoilDirection = (transform.position - touchPosition).normalized;
             rb.AddForce(recoilDirection * recoilForce, ForceMode2D.Impulse);
+        }
+
+        // Trigger Camera Shake
+        if (mainCameraController != null)
+        {
+            mainCameraController.TriggerShake();
         }
 
         currentAmmo--;
