@@ -23,6 +23,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentAmmo = maxAmmo;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            // Ensure the Rigidbody never sleeps to guarantee collision/trigger detection.
+            rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
+        }
         // audioSource = GetComponent<AudioSource>();
         // TODO: Initialize player state, link to GameManager for game over conditions
     }
@@ -149,5 +155,22 @@ public class PlayerController : MonoBehaviour
             GameManager.Instance.GameOver();
         }
         // Collision with AmmoPickup is handled by AmmoPickup's OnTriggerEnter2D
+    }
+
+    // Add this method to handle trigger collisions
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Ammo"))
+        {
+            // --- DIAGNOSTIC ---
+            // If you see this message, the tag comparison is working.
+            Debug.Log("SUCCESS: Collision with Ammo object confirmed inside the IF block.");
+
+            // Directly reload ammo.
+            ReloadAmmo();
+            
+            // Directly destroy the other game object.
+            Destroy(other.gameObject);
+        }
     }
 } 

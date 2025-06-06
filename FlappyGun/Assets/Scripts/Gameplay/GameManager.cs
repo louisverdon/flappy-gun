@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public UIManager uiManager; // Assign in Inspector or find dynamically
     public EnemySpawner enemySpawner; // Will be found dynamically
+    public AmmoSpawner ammoSpawner; // Will be found dynamically
     public Camera mainCamera; // Will be found dynamically
 
     public enum GameState { StartMenu, Playing, Paused, GameOver }
@@ -57,7 +58,13 @@ public class GameManager : MonoBehaviour
         // We must re-find components in the newly loaded scene
         uiManager = FindFirstObjectByType<UIManager>();
         enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        ammoSpawner = FindFirstObjectByType<AmmoSpawner>();
         mainCamera = Camera.main;
+
+        if (ammoSpawner == null)
+        {
+            Debug.LogWarning("GAME MANAGER: AmmoSpawner not found in the scene. Ammo pickups will not spawn.");
+        }
 
         if(mainCamera == null)
         {
@@ -73,6 +80,7 @@ public class GameManager : MonoBehaviour
         score = 0;
         if (uiManager != null) uiManager.UpdateScore(score);
         if (enemySpawner != null) enemySpawner.StartSpawning();
+        if (ammoSpawner != null) ammoSpawner.StartSpawning();
         ChangeState(GameState.Playing);
         
         // if (gameStartSound != null && audioSource != null) audioSource.PlayOneShot(gameStartSound);
@@ -94,6 +102,7 @@ public class GameManager : MonoBehaviour
         if (currentState == GameState.GameOver) return; // Prevent multiple calls
 
         if (enemySpawner != null) enemySpawner.StopSpawning();
+        if (ammoSpawner != null) ammoSpawner.StopSpawning();
         ChangeState(GameState.GameOver);
         // if (gameOverSound != null && audioSource != null) audioSource.PlayOneShot(gameOverSound);
         Debug.Log("Game Over! Final Score: " + score);

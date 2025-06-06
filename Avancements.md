@@ -27,4 +27,14 @@ Ce document résume les progrès réalisés sur le projet Flappy Gun.
 *   **Affichage en jeu (HUD) :** Le score actuel est affiché et mis à jour en temps réel pendant la partie.
 *   **Effets Visuels (VFX) :** Pour améliorer le feedback visuel, des effets simples ont été ajoutés :
     *   Un "Muzzle Flash" (flash de tir) apparaît à la bouche du canon à chaque tir.
-    *   Un "Death Effect" (effet d'explosion) apparaît lorsqu'un ennemi est détruit. 
+    *   Un "Death Effect" (effet d'explosion) apparaît lorsqu'un ennemi est détruit.
+
+### 4. Améliorations et Corrections de Gameplay
+
+*   **Correction du Redémarrage :** La logique de redémarrage a été entièrement revue pour être plus robuste. Le jeu ne se bloque plus après une partie et se réinitialise correctement.
+*   **Caméra Dynamique :** Une caméra suit désormais le joueur avec fluidité, empêchant celui-ci de sortir de l'écran. Un effet de "tremblement" (camera shake) a été ajouté à chaque tir pour améliorer les sensations de jeu.
+*   **Amélioration des Ennemis :**
+    *   La hitbox des ennemis a été agrandie pour être plus permissive et correspondre à leur visuel, rendant les tirs plus satisfaisants.
+    *   Les ennemis s'orientent maintenant correctement dans leur direction de déplacement.
+*   **Sol Infini :** Le sol statique a été remplacé par un système de sol infini qui se génère dynamiquement sous le joueur, garantissant une condition de défaite cohérente sur toute la longueur du niveau.
+*   **Ajustement du Sprite Joueur :** La caméra a été ajustée pour se centrer parfaitement sur le nouveau sprite du joueur. 
