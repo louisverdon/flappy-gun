@@ -109,6 +109,16 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == GameState.GameOver) return; // Prevent multiple calls
 
+        // Stop camera shake when the game ends
+        if (mainCamera != null)
+        {
+            CameraController cc = mainCamera.GetComponent<CameraController>();
+            if (cc != null)
+            {
+                cc.StopShake();
+            }
+        }
+
         // Check for new high score
         if (score > highScore)
         {

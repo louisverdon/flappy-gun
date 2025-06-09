@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
         if (currentShakeDuration > 0)
         {
             smoothedPosition += Random.insideUnitSphere * shakeMagnitude;
-            currentShakeDuration -= Time.deltaTime;
+            currentShakeDuration -= Time.unscaledDeltaTime;
         }
 
         transform.position = smoothedPosition;
@@ -47,5 +47,11 @@ public class CameraController : MonoBehaviour
     public void TriggerShake()
     {
         currentShakeDuration = shakeDuration;
+    }
+
+    // Public method to stop the shake immediately
+    public void StopShake()
+    {
+        currentShakeDuration = 0f;
     }
 } 
