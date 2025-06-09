@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public int score = 0;
+    public int highScore = 0; // New variable to hold the high score
+    private const string HighScoreKey = "HighScore"; // Key for PlayerPrefs
+
     public UIManager uiManager; // Assign in Inspector or find dynamically
     public EnemySpawner enemySpawner; // Will be found dynamically
     public AmmoSpawner ammoSpawner; // Will be found dynamically
@@ -25,6 +28,10 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // GameManager persists across scenes
+            
+            // Load the high score when the game starts
+            highScore = PlayerPrefs.GetInt(HighScoreKey, 0);
+
             // audioSource = GetComponent<AudioSource>();
             // if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         }
@@ -101,6 +108,15 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         if (currentState == GameState.GameOver) return; // Prevent multiple calls
+
+        // Check for new high score
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt(HighScoreKey, highScore);
+            PlayerPrefs.Save(); // Save the new high score immediately
+            Debug.Log("New High Score: " + highScore);
+        }
 
         if (enemySpawner != null) enemySpawner.StopSpawning();
         if (ammoSpawner != null) ammoSpawner.StopSpawning();
