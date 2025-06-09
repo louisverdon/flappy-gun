@@ -7,7 +7,8 @@ public class CameraController : MonoBehaviour
     
     // --- Camera Follow settings ---
     [Header("Camera Follow")]
-    [SerializeField] private float smoothSpeed = 0.125f; // How quickly the camera catches up
+    [Tooltip("A smaller value makes the camera follow faster. Increase this value for a 'lazier', smoother follow.")]
+    [SerializeField] private float smoothSpeed = 0.3f; // How quickly the camera catches up. Increased from 0.125f for smoother movement.
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f); // Set Y to 0 for direct centering
 
     // --- Camera Shake settings ---
