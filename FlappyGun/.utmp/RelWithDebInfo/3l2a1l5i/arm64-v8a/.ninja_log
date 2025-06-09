@@ -1,0 +1,12 @@
+# ninja log v5
+55	1054	7711251953057347	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	c2ebb2f3024b7861
+1057	1345	7711251955847253	E:/Documents/coding/flappy-gun/FlappyGun/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3l2a1l5i/obj/arm64-v8a/libswappywrapper.so	ea3863c74ad2a2ac
+22	2520	7711251967634164	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c8de63cf46679fa8
+37	2560	7711251968014319	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	980aba75b093f825
+15	2575	7711251968184499	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	900d3210c28f7831
+49	2584	7711251968283976	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	6483d51ac8ac8e0
+1	2651	7711251968978322	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	8a32f0d734887144
+43	2881	7711251971290593	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	545e39543f2715ac
+30	2924	7711251971740152	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	1b53e9f0a7d3314f
+9	2982	7711251972291967	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	e7297a35192b8964
+2982	3096	7711251973503984	E:/Documents/coding/flappy-gun/FlappyGun/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3l2a1l5i/obj/arm64-v8a/libgame.so	d7932efe8a90e349
