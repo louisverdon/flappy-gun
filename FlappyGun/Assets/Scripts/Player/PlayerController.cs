@@ -13,6 +13,13 @@ public class PlayerController : MonoBehaviour
     private float nextFireTime = 0f;
     public int maxAmmo = 6;
     private int currentAmmo;
+    public int initialMagazines = 3;
+    private int magazines;
+
+    [Header("Reloading")]
+    private float totalRotation = 0f;
+    private float lastAngle = 0f;
+    private bool showedReloadHint = false;
 
     // TODO: Assign these in the Inspector or find them
     public Transform gunBarrel; // Point from where bullets are fired
@@ -28,12 +35,17 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentAmmo = maxAmmo;
+        magazines = initialMagazines;
+        lastAngle = transform.eulerAngles.z;
+        
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             // Ensure the Rigidbody never sleeps to guarantee collision/trigger detection.
             rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
         }
+        
+        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
         // audioSource = GetComponent<AudioSource>();
         // TODO: Initialize player state, link to GameManager for game over conditions
     }
@@ -44,6 +56,20 @@ public class PlayerController : MonoBehaviour
         {
             HandleAiming();
             HandleInput();
+
+            if (currentAmmo <= 0)
+            {
+                if (!showedReloadHint)
+                {
+                    UIManager.Instance.ShowReloadHint(true);
+                    showedReloadHint = true;
+                }
+                
+                if (Mathf.Abs(totalRotation) >= 360f)
+                {
+                    Reload();
+                }
+            }
         }
         ApplyGravity(); // Gravity should apply even if paused to fall to ground on game over
     }
@@ -69,6 +95,19 @@ public class PlayerController : MonoBehaviour
         );
 
         transform.right = direction;
+
+        // --- Rotation tracking for reloading ---
+        float currentAngle = transform.eulerAngles.z;
+        float deltaAngle = Mathf.DeltaAngle(lastAngle, currentAngle);
+        
+        // We only want to accumulate rotation in one direction, you can decide which one.
+        // For simplicity, let's consider any rotation contributes. Or use Mathf.Abs(deltaAngle) for both ways.
+        if (currentAmmo <= 0)
+        {
+            totalRotation += deltaAngle;
+        }
+        
+        lastAngle = currentAngle;
     }
 
     void HandleInput()
@@ -138,6 +177,7 @@ public class PlayerController : MonoBehaviour
         }
 
         currentAmmo--;
+        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.shootSound);
         Debug.Log("Bang! Ammo left: " + currentAmmo);
 
@@ -151,12 +191,26 @@ public class PlayerController : MonoBehaviour
         // GetComponent<Rigidbody2D>().AddForce(Vector2.down * gravityStrength * Time.deltaTime);
     }
 
-    public void ReloadAmmo()
+    public void Reload()
     {
-        currentAmmo = maxAmmo;
-        if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.reloadSound);
-        Debug.Log("Reloaded! Ammo: " + currentAmmo);
-        // TODO: Play reload VFX/SFX
+        if (magazines > 0)
+        {
+            magazines--;
+            currentAmmo = maxAmmo;
+            
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.reloadSound);
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+            UIManager.Instance.ShowReloadHint(false);
+            showedReloadHint = false;
+            
+            Debug.Log("Reloaded! Ammo: " + currentAmmo);
+            
+            totalRotation = 0f;
+        }
+        else
+        {
+            Debug.Log("No magazines left!");
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -172,29 +226,19 @@ public class PlayerController : MonoBehaviour
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.groundImpactSound);
             GameManager.Instance.GameOver();
         }
-        // Collision with AmmoPickup is handled by AmmoPickup's OnTriggerEnter2D
     }
 
-    // Add this method to handle trigger collisions
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Ammo"))
         {
-            // --- DIAGNOSTIC ---
-            // If you see this message, the tag comparison is working.
-            Debug.Log("SUCCESS: Collision with Ammo object confirmed inside the IF block.");
-
-            // Reload ammo.
-            ReloadAmmo();
+            magazines++;
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+            Debug.Log("Picked up a magazine! Total magazines: " + magazines);
             
-            // Play VFX if the component and prefab exist
-            AmmoPickup ammoPickup = other.GetComponent<AmmoPickup>();
-            if (ammoPickup != null && ammoPickup.collectionEffectPrefab != null)
-            {
-                Instantiate(ammoPickup.collectionEffectPrefab, other.transform.position, Quaternion.identity);
-            }
+            // Optional: Play a sound for picking up a magazine
+            // if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(pickupSound);
 
-            // Destroy the ammo pickup object.
             Destroy(other.gameObject);
         }
     }

@@ -5,14 +5,37 @@ using TMPro; // <-- AJOUTER CETTE LIGNE
 // Corresponds to "Interface Utilisateur (UI)"
 public class UIManager : MonoBehaviour
 {
-    // Assign these in the Unity Inspector
-    public TextMeshProUGUI scoreText;            // For displaying current score during gameplay
-    public TextMeshProUGUI highScoreText;        // To display the high score on the start screen
+    public static UIManager Instance { get; private set; }
+    
+    [Header("UI Panels")]
     public GameObject startScreenPanel; // Panel for the start screen
     public GameObject gameOverPanel;    // Panel for the game over screen
+
+    [Header("Gameplay UI")]
+    public TextMeshProUGUI scoreText;            // For displaying current score during gameplay
+    public TextMeshProUGUI ammoText;             // For displaying current ammo
+    public TextMeshProUGUI magazinesText;        // For displaying remaining magazines
+    public TextMeshProUGUI reloadText;           // To prompt the player to reload
+
+    [Header("Screen Texts")]
+    public TextMeshProUGUI highScoreText;        // To display the high score on the start screen
     public TextMeshProUGUI finalScoreText;       // Text on game over panel to show final score
+    
+    [Header("Buttons")]
     public Button replayButton;       // Button on game over panel to replay
     public Button startButton;        // Button on start screen panel to start game
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -48,6 +71,9 @@ public class UIManager : MonoBehaviour
             startButton.onClick.RemoveAllListeners(); // Clear existing listeners
             startButton.onClick.AddListener(GameManager.Instance.StartGame);
         }
+        
+        UpdateAmmoUI(0, 0);
+        ShowReloadHint(false);
     }
 
     public void UpdateScore(int score)
@@ -58,11 +84,35 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void UpdateAmmoUI(int currentAmmo, int magazines)
+    {
+        if (ammoText != null)
+        {
+            ammoText.text = "Balles: " + currentAmmo;
+        }
+        if (magazinesText != null)
+        {
+            magazinesText.text = "Chargeurs: " + magazines;
+        }
+    }
+
+    public void ShowReloadHint(bool show)
+    {
+        if (reloadText != null)
+        {
+            reloadText.gameObject.SetActive(show);
+            reloadText.text = "Faites une rotation de 360° pour recharger !";
+        }
+    }
+
     public void ShowStartScreen()
     {
         if (startScreenPanel != null) startScreenPanel.SetActive(true);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide score during start screen
+        if (ammoText != null) ammoText.gameObject.SetActive(false);
+        if (magazinesText != null) magazinesText.gameObject.SetActive(false);
+        if (reloadText != null) reloadText.gameObject.SetActive(false);
 
         // Display the high score
         if (highScoreText != null && GameManager.Instance != null)
@@ -79,6 +129,8 @@ public class UIManager : MonoBehaviour
          if (startScreenPanel != null) startScreenPanel.SetActive(false);
          if (gameOverPanel != null) gameOverPanel.SetActive(false);
          if (scoreText != null) scoreText.gameObject.SetActive(true); // Show score
+         if (ammoText != null) ammoText.gameObject.SetActive(true);
+         if (magazinesText != null) magazinesText.gameObject.SetActive(true);
          if (highScoreText != null) highScoreText.gameObject.SetActive(false); // Hide high score during gameplay
          Debug.Log("UI: Showing Game HUD");
     }
@@ -88,6 +140,9 @@ public class UIManager : MonoBehaviour
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
         if (startScreenPanel != null) startScreenPanel.SetActive(false);
         if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide in-game score during game over
+        if (ammoText != null) ammoText.gameObject.SetActive(false);
+        if (magazinesText != null) magazinesText.gameObject.SetActive(false);
+        if (reloadText != null) reloadText.gameObject.SetActive(false);
         
         // Display final score and high score
         if (finalScoreText != null)
