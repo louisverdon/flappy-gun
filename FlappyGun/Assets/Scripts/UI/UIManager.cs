@@ -10,8 +10,12 @@ public class UIManager : MonoBehaviour
     [Header("UI Panels")]
     public GameObject startScreenPanel; // Panel for the start screen
     public GameObject gameOverPanel;    // Panel for the game over screen
+    public GameObject gameplayHudPanel; // The parent panel for all gameplay HUD elements (score, ammo, etc.)
 
     [Header("Gameplay UI")]
+    public GameObject scoreInfoObject;           // Parent object for score icon and text
+    public GameObject ammoInfoObject;            // Parent object for ammo icon and text
+    public GameObject magazineInfoObject;        // Parent object for magazine icon and text
     public TextMeshProUGUI scoreText;            // For displaying current score during gameplay
     public TextMeshProUGUI ammoText;             // For displaying current ammo
     public TextMeshProUGUI magazinesText;        // For displaying remaining magazines
@@ -80,7 +84,7 @@ public class UIManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + score;
+            scoreText.text = "" + score;
         }
     }
 
@@ -88,11 +92,11 @@ public class UIManager : MonoBehaviour
     {
         if (ammoText != null)
         {
-            ammoText.text = "Balles: " + currentAmmo;
+            ammoText.text = "" + currentAmmo;
         }
         if (magazinesText != null)
         {
-            magazinesText.text = "Chargeurs: " + magazines;
+            magazinesText.text = "" + magazines;
         }
     }
 
@@ -109,9 +113,7 @@ public class UIManager : MonoBehaviour
     {
         if (startScreenPanel != null) startScreenPanel.SetActive(true);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
-        if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide score during start screen
-        if (ammoText != null) ammoText.gameObject.SetActive(false);
-        if (magazinesText != null) magazinesText.gameObject.SetActive(false);
+        if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
         if (reloadText != null) reloadText.gameObject.SetActive(false);
 
         // Display the high score
@@ -128,9 +130,7 @@ public class UIManager : MonoBehaviour
     {
          if (startScreenPanel != null) startScreenPanel.SetActive(false);
          if (gameOverPanel != null) gameOverPanel.SetActive(false);
-         if (scoreText != null) scoreText.gameObject.SetActive(true); // Show score
-         if (ammoText != null) ammoText.gameObject.SetActive(true);
-         if (magazinesText != null) magazinesText.gameObject.SetActive(true);
+         if (gameplayHudPanel != null) gameplayHudPanel.SetActive(true);
          if (highScoreText != null) highScoreText.gameObject.SetActive(false); // Hide high score during gameplay
          Debug.Log("UI: Showing Game HUD");
     }
@@ -139,9 +139,7 @@ public class UIManager : MonoBehaviour
     {
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
         if (startScreenPanel != null) startScreenPanel.SetActive(false);
-        if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide in-game score during game over
-        if (ammoText != null) ammoText.gameObject.SetActive(false);
-        if (magazinesText != null) magazinesText.gameObject.SetActive(false);
+        if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
         if (reloadText != null) reloadText.gameObject.SetActive(false);
         
         // Display final score and high score
