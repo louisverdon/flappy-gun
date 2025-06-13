@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI scoreText;            // For displaying current score during gameplay
     public TextMeshProUGUI ammoText;             // For displaying current ammo
     public TextMeshProUGUI magazinesText;        // For displaying remaining magazines
-    public TextMeshProUGUI reloadText;           // To prompt the player to reload
+    public GameObject reloadHintObject;           // To prompt the player to reload
 
     [Header("Screen Texts")]
     public TextMeshProUGUI highScoreText;        // To display the high score on the start screen
@@ -102,10 +102,9 @@ public class UIManager : MonoBehaviour
 
     public void ShowReloadHint(bool show)
     {
-        if (reloadText != null)
+        if (reloadHintObject != null)
         {
-            reloadText.gameObject.SetActive(show);
-            reloadText.text = "Faites une rotation de 360° pour recharger !";
+            reloadHintObject.SetActive(show);
         }
     }
 
@@ -114,7 +113,7 @@ public class UIManager : MonoBehaviour
         if (startScreenPanel != null) startScreenPanel.SetActive(true);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
-        if (reloadText != null) reloadText.gameObject.SetActive(false);
+        if (reloadHintObject != null) reloadHintObject.SetActive(false);
 
         // Display the high score
         if (highScoreText != null && GameManager.Instance != null)
@@ -140,7 +139,7 @@ public class UIManager : MonoBehaviour
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
         if (startScreenPanel != null) startScreenPanel.SetActive(false);
         if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
-        if (reloadText != null) reloadText.gameObject.SetActive(false);
+        if (reloadHintObject != null) reloadHintObject.SetActive(false);
         
         // Display final score and high score
         if (finalScoreText != null)

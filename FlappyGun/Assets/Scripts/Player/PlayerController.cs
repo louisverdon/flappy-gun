@@ -181,7 +181,11 @@ public class PlayerController : MonoBehaviour
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.shootSound);
         Debug.Log("Bang! Ammo left: " + currentAmmo);
 
-        // TODO: Update UI for ammo (if decided to show it)
+        // Show reload hint as soon as ammo reaches 0
+        if (currentAmmo == 0)
+        {
+            UIManager.Instance.ShowReloadHint(true);
+        }
     }
 
     void ApplyGravity()
@@ -201,7 +205,6 @@ public class PlayerController : MonoBehaviour
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.reloadSound);
             UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
             UIManager.Instance.ShowReloadHint(false);
-            showedReloadHint = false;
             
             Debug.Log("Reloaded! Ammo: " + currentAmmo);
             
