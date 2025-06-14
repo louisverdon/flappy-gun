@@ -102,8 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53580478cb913d04596d42da191e0dec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalSpeed: 2
-  verticalJumpForce: 9
+  horizontalSpeed: 3
+  verticalJumpForce: 10
   jumpInterval: 1
   deathEffectPrefab: {fileID: 2432419617660748535, guid: 98620679fadfc554a8dcf74235d314b1, type: 3}
 --- !u!50 &2343476962414322340

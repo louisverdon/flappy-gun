@@ -16,6 +16,12 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera; // Will be found dynamically
     public PlayerController playerController; // Will be found dynamically
 
+    [Header("Sky Color Settings")]
+    public Color skyColorAtZero = new Color(0.53f, 0.81f, 0.92f); // Light blue
+    public Color skyColorAtMaxHeight = new Color(0.1f, 0.1f, 0.2f); // Dark blue/purple
+    public float maxHeight = 1000f; // The height at which the sky is darkest
+    public float minHeight = 0f; // The height from which the sky starts to darken
+    
     public enum GameState { StartMenu, Playing, Paused, GameOver }
     public GameState currentState { get; private set; }
 
@@ -59,6 +65,29 @@ public class GameManager : MonoBehaviour
     {
         // Start with the main menu
         ChangeState(GameState.StartMenu);
+    }
+
+    void Update()
+    {
+        if (currentState == GameState.Playing && playerController != null && mainCamera != null)
+        {
+            float playerHeight = playerController.transform.position.y;
+
+            if (playerHeight <= minHeight)
+            {
+                mainCamera.backgroundColor = skyColorAtZero;
+            }
+            else if (playerHeight >= maxHeight)
+            {
+                mainCamera.backgroundColor = skyColorAtMaxHeight;
+            }
+            else
+            {
+                // Interpolate because we are between min and max height
+                float t = (playerHeight - minHeight) / (maxHeight - minHeight);
+                mainCamera.backgroundColor = Color.Lerp(skyColorAtZero, skyColorAtMaxHeight, t);
+            }
+        }
     }
 
     private void OnEnable()
