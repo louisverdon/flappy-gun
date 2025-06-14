@@ -72,6 +72,10 @@ public class GameManager : MonoBehaviour
         if (currentState == GameState.Playing && playerController != null && mainCamera != null)
         {
             float playerHeight = playerController.transform.position.y;
+            
+            // --- DEBUG LOGS ---
+            // Debug.Log($"Player Height: {playerHeight} | Min: {minHeight}, Max: {maxHeight}");
+            // ------------------
 
             if (playerHeight <= minHeight)
             {
@@ -110,7 +114,7 @@ public class GameManager : MonoBehaviour
         enemySpawner = FindFirstObjectByType<EnemySpawner>();
         ammoSpawner = FindFirstObjectByType<AmmoSpawner>();
         mainCamera = Camera.main;
-        playerController = FindFirstObjectByType<PlayerController>();
+        // playerController = FindFirstObjectByType<PlayerController>(); // This is now handled by RegisterPlayer
 
         if (ammoSpawner == null)
         {
@@ -124,6 +128,12 @@ public class GameManager : MonoBehaviour
         
         // Set the initial state, which will also handle Time.timeScale and show the correct UI
         ChangeState(GameState.StartMenu);
+    }
+
+    public void RegisterPlayer(PlayerController pc)
+    {
+        playerController = pc;
+        Debug.Log("GameManager: Player registered successfully.");
     }
 
     public void StartGame()

@@ -32,6 +32,19 @@ public class PlayerController : MonoBehaviour
     // private AudioSource audioSource;
 
 
+    void Awake()
+    {
+        // Register this player instance with the GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterPlayer(this);
+        }
+        else
+        {
+            Debug.LogError("PlayerController: GameManager instance not found!");
+        }
+    }
+
     void Start()
     {
         currentAmmo = maxAmmo;
