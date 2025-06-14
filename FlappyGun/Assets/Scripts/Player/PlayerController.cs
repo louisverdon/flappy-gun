@@ -50,6 +50,34 @@ public class PlayerController : MonoBehaviour
         // TODO: Initialize player state, link to GameManager for game over conditions
     }
 
+    public void ResetState()
+    {
+        // Reset ammo and magazines to their initial values
+        currentAmmo = maxAmmo;
+        magazines = initialMagazines;
+        
+        // Reset rotation tracking for reload mechanic
+        totalRotation = 0f;
+        showedReloadHint = false;
+
+        // Reset physics
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        // TODO: Reset player position and rotation if needed
+
+        // Update the UI
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+            UIManager.Instance.ShowReloadHint(false);
+        }
+    }
+
     void Update()
     {
         if (GameManager.Instance.currentState == GameManager.GameState.Playing)

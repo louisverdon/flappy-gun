@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public enum GameState { StartMenu, Playing, Paused, GameOver }
     public GameState currentState { get; private set; }
 
+    private bool _adRewardPending = false;
+
     // public AudioClip gameOverSound; // Assign in Inspector
     // public AudioClip gameStartSound; // Assign in Inspector
     // private AudioSource audioSource;
@@ -97,6 +99,23 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        // First, reset the player's state completely
+        if (playerController != null)
+        {
+            playerController.ResetState();
+        }
+
+        // Then, apply the pending ad reward if available
+        if (_adRewardPending)
+        {
+            if (playerController != null)
+            {
+                playerController.GrantAmmoReward(3); // Grant 3 extra magazines
+                Debug.Log("Ad reward applied: +3 magazines.");
+            }
+            _adRewardPending = false; // Reset the flag after granting the reward
+        }
+
         score = 0;
         if (uiManager != null) uiManager.UpdateScore(score);
         if (enemySpawner != null) enemySpawner.StartSpawning();
@@ -153,14 +172,12 @@ public class GameManager : MonoBehaviour
 
     public void GrantReward()
     {
-        if (playerController != null)
+        if (currentState == GameState.StartMenu)
         {
-            // For example, grant 1 magazine
-            playerController.GrantAmmoReward(1); 
-        }
-        else
-        {
-            Debug.LogError("PlayerController not found. Cannot grant reward.");
+            _adRewardPending = true;
+            Debug.Log("Reward of +3 magazines will be granted on next game start.");
+            // Optionally, show a message to the player on the UI
+            // For example: UIManager.Instance.ShowRewardPendingMessage();
         }
     }
 
