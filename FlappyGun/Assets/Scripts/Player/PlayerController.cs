@@ -245,4 +245,12 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+
+    public void GrantAmmoReward(int amount)
+    {
+        magazines += amount;
+        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        // Optionally, provide some feedback to the player
+        Debug.Log($"Player received {amount} magazines as a reward.");
+    }
 } 

@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
     [Header("Buttons")]
     public Button replayButton;       // Button on game over panel to replay
     public Button startButton;        // Button on start screen panel to start game
+    public Button watchAdButton;      // Button to watch an ad for a reward
 
     void Awake()
     {
@@ -76,6 +77,12 @@ public class UIManager : MonoBehaviour
             startButton.onClick.AddListener(GameManager.Instance.StartGame);
         }
         
+        if (watchAdButton != null && AdsManager.Instance != null)
+        {
+            watchAdButton.onClick.RemoveAllListeners();
+            watchAdButton.onClick.AddListener(AdsManager.Instance.ShowRewardedAd);
+        }
+
         UpdateAmmoUI(0, 0);
         ShowReloadHint(false);
     }
@@ -115,6 +122,12 @@ public class UIManager : MonoBehaviour
         if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
         if (reloadHintObject != null) reloadHintObject.SetActive(false);
 
+        // Show ad button on the start screen
+        if (watchAdButton != null)
+        {
+            watchAdButton.gameObject.SetActive(true);
+        }
+
         // Display the high score
         if (highScoreText != null && GameManager.Instance != null)
         {
@@ -131,6 +144,7 @@ public class UIManager : MonoBehaviour
          if (gameOverPanel != null) gameOverPanel.SetActive(false);
          if (gameplayHudPanel != null) gameplayHudPanel.SetActive(true);
          if (highScoreText != null) highScoreText.gameObject.SetActive(false); // Hide high score during gameplay
+         if (watchAdButton != null) watchAdButton.gameObject.SetActive(false); // Hide ad button during gameplay
          Debug.Log("UI: Showing Game HUD");
     }
 
@@ -141,6 +155,12 @@ public class UIManager : MonoBehaviour
         if (gameplayHudPanel != null) gameplayHudPanel.SetActive(false);
         if (reloadHintObject != null) reloadHintObject.SetActive(false);
         
+        // Hide ad button on game over screen
+        if (watchAdButton != null)
+        {
+            watchAdButton.gameObject.SetActive(false);
+        }
+
         // Display final score and high score
         if (finalScoreText != null)
         {

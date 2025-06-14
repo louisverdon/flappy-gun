@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public EnemySpawner enemySpawner; // Will be found dynamically
     public AmmoSpawner ammoSpawner; // Will be found dynamically
     public Camera mainCamera; // Will be found dynamically
+    public PlayerController playerController; // Will be found dynamically
 
     public enum GameState { StartMenu, Playing, Paused, GameOver }
     public GameState currentState { get; private set; }
@@ -29,6 +30,17 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); // GameManager persists across scenes
             
+            // --- AdsManager Initialization ---
+            // Check if an AdsManager instance already exists in the scene
+            if (AdsManager.Instance == null)
+            {
+                // If not, create a new GameObject and add the AdsManager component
+                GameObject adsManagerObject = new GameObject("AdsManager");
+                adsManagerObject.AddComponent<AdsManager>();
+                // The AdsManager's Awake method will handle the rest (DontDestroyOnLoad, etc.)
+            }
+            // --------------------------------
+
             // Load the high score when the game starts
             highScore = PlayerPrefs.GetInt(HighScoreKey, 0);
 
@@ -67,6 +79,7 @@ public class GameManager : MonoBehaviour
         enemySpawner = FindFirstObjectByType<EnemySpawner>();
         ammoSpawner = FindFirstObjectByType<AmmoSpawner>();
         mainCamera = Camera.main;
+        playerController = FindFirstObjectByType<PlayerController>();
 
         if (ammoSpawner == null)
         {
@@ -136,6 +149,19 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Over! Final Score: " + score);
         // TODO: Stop enemy spawning (this is now handled by StopSpawning)
         // TODO: Disable player controls (PlayerController should check GameManager.currentState)
+    }
+
+    public void GrantReward()
+    {
+        if (playerController != null)
+        {
+            // For example, grant 1 magazine
+            playerController.GrantAmmoReward(1); 
+        }
+        else
+        {
+            Debug.LogError("PlayerController not found. Cannot grant reward.");
+        }
     }
 
     public void Replay()
