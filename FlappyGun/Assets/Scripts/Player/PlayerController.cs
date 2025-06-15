@@ -32,21 +32,9 @@ public class PlayerController : MonoBehaviour
     // private AudioSource audioSource;
 
 
-    void Awake()
-    {
-        // Register this player instance with the GameManager
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.RegisterPlayer(this);
-        }
-        else
-        {
-            Debug.LogError("PlayerController: GameManager instance not found!");
-        }
-    }
-
     void Start()
     {
+        // Initialize basic player state first
         currentAmmo = maxAmmo;
         magazines = initialMagazines;
         lastAngle = transform.eulerAngles.z;
@@ -58,7 +46,22 @@ public class PlayerController : MonoBehaviour
             rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
         }
         
-        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        // Register this player instance with the GameManager (after GameManager has initialized)
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterPlayer(this);
+        }
+        else
+        {
+            Debug.LogError("PlayerController: GameManager instance not found! Make sure GameManager is in the scene.");
+        }
+        
+        // Update UI after registration
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        }
+        
         // audioSource = GetComponent<AudioSource>();
         // TODO: Initialize player state, link to GameManager for game over conditions
     }
@@ -93,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.currentState == GameManager.GameState.Playing)
+        if (GameManager.Instance != null && GameManager.Instance.currentState == GameManager.GameState.Playing)
         {
             HandleAiming();
             HandleInput();
@@ -102,7 +105,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (!showedReloadHint)
                 {
-                    UIManager.Instance.ShowReloadHint(true);
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowReloadHint(true);
+                    }
                     showedReloadHint = true;
                 }
                 
@@ -110,6 +116,14 @@ public class PlayerController : MonoBehaviour
                 {
                     Reload();
                 }
+            }
+        }
+        else if (GameManager.Instance == null)
+        {
+            // Debug: Log only once when GameManager is null
+            if (Time.frameCount % 300 == 0) // Log every ~5 seconds (at 60fps)
+            {
+                Debug.LogWarning("PlayerController: GameManager.Instance is null in Update()");
             }
         }
         ApplyGravity(); // Gravity should apply even if paused to fall to ground on game over
@@ -218,12 +232,15 @@ public class PlayerController : MonoBehaviour
         }
 
         currentAmmo--;
-        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        }
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.shootSound);
         Debug.Log("Bang! Ammo left: " + currentAmmo);
 
         // Show reload hint as soon as ammo reaches 0
-        if (currentAmmo == 0)
+        if (currentAmmo == 0 && UIManager.Instance != null)
         {
             UIManager.Instance.ShowReloadHint(true);
         }
@@ -244,8 +261,11 @@ public class PlayerController : MonoBehaviour
             currentAmmo = maxAmmo;
             
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.reloadSound);
-            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
-            UIManager.Instance.ShowReloadHint(false);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+                UIManager.Instance.ShowReloadHint(false);
+            }
             
             Debug.Log("Reloaded! Ammo: " + currentAmmo);
             
@@ -262,13 +282,19 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Debug.Log("Player collided with Enemy - Game Over");
-            GameManager.Instance.GameOver();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
         else if (collision.gameObject.CompareTag("Ground")) // Assuming ground has "Ground" tag
         {
             Debug.Log("Player hit the ground - Game Over");
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySound(AudioManager.Instance.groundImpactSound);
-            GameManager.Instance.GameOver();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
     }
 
@@ -277,7 +303,10 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Ammo"))
         {
             magazines++;
-            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+            }
             Debug.Log("Picked up a magazine! Total magazines: " + magazines);
             
             // Optional: Play a sound for picking up a magazine
@@ -290,7 +319,10 @@ public class PlayerController : MonoBehaviour
     public void GrantAmmoReward(int amount)
     {
         magazines += amount;
-        UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateAmmoUI(currentAmmo, magazines);
+        }
         // Optionally, provide some feedback to the player
         Debug.Log($"Player received {amount} magazines as a reward.");
     }

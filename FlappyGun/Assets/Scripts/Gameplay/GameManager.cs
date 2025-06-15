@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // GameManager persists across scenes
+            Debug.Log("GameManager: Instance initialized successfully.");
             
             // --- AdsManager Initialization ---
             // Check if an AdsManager instance already exists in the scene
